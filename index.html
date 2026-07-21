@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f2e8">
+  <meta name="description" content="A calm bulletin-board calendar for events, tasks, appointments, and school.">
+  <title>Calendar</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand" aria-label="Calendar home">
+        <span class="brand-pin" aria-hidden="true"></span>
+        <div><strong>Calendar</strong><small>Your week, pinned in place.</small></div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-button search-toggle" type="button" aria-label="Search" title="Search">⌕</button>
+        <button class="primary-button" id="addItemButton" type="button"><span>＋</span> Add item</button>
+        <button class="avatar-button" id="accountButton" type="button" aria-label="Account">AM</button>
+      </div>
+    </header>
+
+    <div class="search-panel" id="searchPanel" hidden>
+      <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search titles, notes, locations, and dates…" autocomplete="off"></label>
+      <select id="searchType" aria-label="Filter search by type"><option value="all">All types</option><option value="personal">Personal</option><option value="appointment">Appointments</option><option value="task">Tasks</option><option value="academic">Academic</option></select>
+      <label class="check-filter"><input id="incompleteOnly" type="checkbox"> Open tasks only</label>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+
+    <main>
+      <section class="calendar-toolbar">
+        <div class="date-navigation">
+          <button class="icon-button" id="previousButton" type="button" aria-label="Previous period">‹</button>
+          <button class="today-button" id="todayButton" type="button">Today</button>
+          <button class="icon-button" id="nextButton" type="button" aria-label="Next period">›</button>
+          <h1 id="periodTitle"></h1>
+        </div>
+        <div class="view-switcher" role="group" aria-label="Calendar view">
+          <button data-view="month" type="button">Month</button>
+          <button data-view="week" type="button" class="active">Week</button>
+        </div>
+      </section>
+
+      <section class="board-wrap">
+        <div class="board" id="calendarBoard" aria-live="polite"></div>
+      </section>
+
+      <section class="up-next" aria-labelledby="upNextTitle">
+        <div class="section-heading"><div><span class="eyebrow">FOCUS</span><h2 id="upNextTitle">Up next</h2></div><button id="viewTasksButton" class="text-button" type="button">View open tasks →</button></div>
+        <div class="up-next-list" id="upNextList"></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="scrim" id="scrim" hidden></div>
+
+  <aside class="day-drawer" id="dayDrawer" aria-hidden="true" aria-labelledby="drawerTitle">
+    <div class="drawer-header"><div><span class="eyebrow" id="drawerEyebrow">SELECTED DAY</span><h2 id="drawerTitle"></h2></div><button class="icon-button" data-close-drawer type="button" aria-label="Close">×</button></div>
+    <button class="primary-button full-width" id="drawerAddButton" type="button">＋ Add to this day</button>
+    <div class="drawer-items" id="drawerItems"></div>
+    <div class="daily-reminders"><h3>Reminders</h3><textarea id="dailyReminder" rows="4" placeholder="Add a reminder or note for this day…"></textarea><span id="reminderSaved">Saved automatically</span></div>
+  </aside>
+
+  <dialog class="item-dialog" id="itemDialog">
+    <form method="dialog" id="itemForm">
+      <div class="dialog-header"><div><span class="eyebrow" id="formEyebrow">NEW PIN</span><h2 id="formTitle">Add an item</h2></div><button class="icon-button" value="cancel" type="submit" aria-label="Close">×</button></div>
+      <input type="hidden" id="itemId">
+      <div class="field"><label for="itemTitle">Title</label><input id="itemTitle" required maxlength="80" placeholder="What’s happening?"></div>
+      <div class="form-row"><div class="field"><label for="itemType">Type</label><select id="itemType"><option value="personal">Personal</option><option value="appointment">Appointment</option><option value="task">Task</option><option value="academic">Academic</option></select></div><div class="field"><label for="itemDate">Date</label><input id="itemDate" type="date" required></div></div>
+      <div class="form-row"><div class="field"><label for="startTime">Start</label><input id="startTime" type="time"></div><div class="field"><label for="endTime">End</label><input id="endTime" type="time"></div></div>
+      <label class="inline-check"><input id="allDay" type="checkbox"> All day</label>
+      <div class="field"><label for="itemLocation">Location or link</label><input id="itemLocation" placeholder="Optional"></div>
+      <div class="field"><label for="itemNotes">Notes</label><textarea id="itemNotes" rows="3" placeholder="Add details…"></textarea></div>
+      <div class="form-row"><div class="field"><label for="repeatRule">Repeat</label><select id="repeatRule"><option value="none">Doesn’t repeat</option><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="weekdays">Weekdays</option></select></div><div class="field"><label for="reminderMinutes">Notify me</label><select id="reminderMinutes"><option value="none">No notification</option><option value="0">At start time</option><option value="10">10 minutes before</option><option value="30">30 minutes before</option><option value="60">1 hour before</option><option value="1440">1 day before</option></select></div></div>
+      <div class="dialog-actions"><button class="danger-button" id="deleteItemButton" type="button" hidden>Delete</button><span></span><button class="secondary-button" value="cancel" type="submit">Cancel</button><button class="primary-button" id="saveItemButton" type="button">Pin item</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="account-dialog" id="accountDialog">
+    <form method="dialog" id="accountForm">
+      <div class="dialog-header"><div><span class="eyebrow">YOUR CALENDAR</span><h2>Sign in to sync</h2></div><button class="icon-button" value="cancel" type="submit" aria-label="Close">×</button></div>
+      <p class="muted">Your calendar currently saves on this device. Connect Supabase to enable secure syncing across devices.</p>
+      <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" placeholder="you@example.com"></div>
+      <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" minlength="8"></div>
+      <div class="dialog-actions stacked"><button class="primary-button full-width" id="signInButton" type="button">Sign in</button><button class="secondary-button full-width" id="signUpButton" type="button">Create account</button></div>
+      <div class="sync-status" id="syncStatus">Local mode is active</div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./config.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
