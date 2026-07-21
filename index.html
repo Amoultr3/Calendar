@@ -8,7 +8,7 @@
   <title>Bulletin Board</title>
   <link rel="manifest" href="./manifest.webmanifest?v=3">
   <link rel="icon" href="./icons/icon.svg?v=3" type="image/svg+xml">
-  <link rel="stylesheet" href="./styles.css?v=4">
+  <link rel="stylesheet" href="./styles.css?v=5">
 </head>
 <body>
   <div class="app-shell">
@@ -70,8 +70,8 @@
       </section>
       <section class="items-page" id="itemsPage" hidden>
         <div class="sheet-heading"><div><span class="eyebrow">BULK EDITOR</span><h1>All items</h1><p>Edit your entire board in one place. Changes save automatically.</p></div><div class="sheet-actions"><button class="secondary-button" id="importRowsButton" type="button">Paste rows</button><button class="primary-button" id="addRowButton" type="button">＋ Add row</button></div></div>
-        <div class="sheet-filters"><label class="search-box"><span>⌕</span><input id="sheetSearch" type="search" placeholder="Search all items…"></label><select id="sheetCategory"><option value="all">All categories</option><option value="health">Health</option><option value="academic">Academic</option><option value="personal">Personal</option><option value="finance">Finance</option><option value="dating">Dating</option><option value="family">Friends &amp; Family</option></select><select id="sheetStatus"><option value="all">All statuses</option><option value="planned">Planned</option><option value="progress">In progress</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select><button class="danger-button" id="deleteSelectedButton" type="button" disabled>Delete selected</button></div>
-        <div class="sheet-wrap"><table class="items-table"><thead><tr><th><input id="selectAllRows" type="checkbox" aria-label="Select all visible rows"></th><th>★</th><th>Title</th><th>Category</th><th>Type</th><th>Date</th><th>Time</th><th>Status</th><th>Notes</th><th></th></tr></thead><tbody id="itemsTableBody"></tbody></table></div>
+        <div class="sheet-filters"><label class="search-box"><span>⌕</span><input id="sheetSearch" type="search" placeholder="Search all items…"></label><select id="sheetCategory"><option value="all">All categories</option><option value="health">Health</option><option value="academic">Academic</option><option value="personal">Personal</option><option value="finance">Finance</option><option value="dating">Dating</option><option value="family">Friends &amp; Family</option></select><select id="sheetStatus"><option value="all">All statuses</option><option value="planned">Planned</option><option value="progress">In progress</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select><label class="check-filter"><input id="hideFinished" type="checkbox"> Hide finished</label><button class="danger-button" id="deleteSelectedButton" type="button" disabled>Delete selected</button></div>
+        <div class="sheet-wrap"><table class="items-table"><thead><tr><th><input id="selectAllRows" type="checkbox" aria-label="Select all visible rows"></th><th></th><th>★</th><th>Title</th><th>Category</th><th>Type</th><th>Date</th><th>Start</th><th>Location / Link</th><th>Status</th><th>Notes</th><th></th></tr></thead><tbody id="itemsTableBody"></tbody></table></div>
         <div class="sheet-footer" id="sheetCount"></div>
       </section>
     </main>
@@ -81,9 +81,9 @@
 
   <aside class="day-drawer" id="dayDrawer" aria-hidden="true" aria-labelledby="drawerTitle">
     <div class="drawer-header"><div><span class="eyebrow" id="drawerEyebrow">SELECTED DAY</span><h2 id="drawerTitle"></h2></div><button class="icon-button" data-close-drawer type="button" aria-label="Close">×</button></div>
-    <button class="primary-button full-width" id="drawerAddButton" type="button">＋ Add to this day</button>
-    <div class="drawer-items" id="drawerItems"></div>
-    <div class="daily-reminders"><h3>Reminders</h3><textarea id="dailyReminder" rows="4" placeholder="Add a reminder or note for this day…"></textarea><span id="reminderSaved">Saved automatically</span></div>
+    <div id="drawerDayView"><button class="primary-button full-width" id="drawerAddButton" type="button">＋ Add to this day</button><div class="drawer-items" id="drawerItems"></div><div class="daily-reminders"><h3>Reminders</h3><textarea id="dailyReminder" rows="4" placeholder="Add a reminder or note for this day…"></textarea><span id="reminderSaved">Saved automatically</span></div></div>
+    <div id="drawerDetailView" hidden><button class="drawer-back text-button" data-drawer-back type="button">← Back to day</button><div id="drawerDetail"></div><button class="primary-button full-width" id="drawerEditButton" type="button">Edit item</button></div>
+    <div id="drawerFormView" hidden><button class="drawer-back text-button" data-drawer-back type="button">← Back to day</button><form id="drawerItemForm"></form></div>
   </aside>
 
   <dialog class="item-dialog" id="itemDialog">
@@ -127,6 +127,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./config.js?v=3"></script>
-  <script src="./app.js?v=4"></script>
+  <script src="./app.js?v=5"></script>
 </body>
 </html>
